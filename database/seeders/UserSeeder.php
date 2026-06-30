@@ -36,3 +36,4 @@ class UserSeeder extends Seeder
        }
     }
 }
+         
