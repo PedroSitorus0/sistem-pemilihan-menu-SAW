@@ -131,16 +131,6 @@ Aplikasi berbasis web untuk membantu pemilihan menu terbaik di kantin menggunaka
 - [ ] Perbaikan UI/UX, notifikasi, validasi form
 - [ ] Dokumentasi penggunaan
 
-## Pembagian Tugas Tim (6 Anggota)
-| Anggota | Fokus |
-|---------|-------|
-| 1 | Seeder (Kriteria, Menu, User), Dashboard Controller, Layout |
-| 2 | Admin MenuController + view CRUD menu |
-| 3 | Admin KriteriaController + validasi bobot, Admin UserController |
-| 4 | Penilai PenilaianController + form penilaian |
-| 5 | SAW Service + SawController + view hasil |
-| 6 | Middleware Logger, Admin LogController, DevController |
-
 ## Catatan Penting
 - Semua route yang memerlukan autentikasi sudah dibungkus middleware `auth`.
 - Route Admin/Dev dipisahkan dari route Penilai menggunakan middleware `role:admin,dev` dan `role:dosen,mahasiswa`.
