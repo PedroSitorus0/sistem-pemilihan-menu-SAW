@@ -1,58 +1,150 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Sistem Pendukung Keputusan Pemilihan Menu Kantin (Metode SAW)
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## Deskripsi Sistem
+Aplikasi berbasis web untuk membantu pemilihan menu terbaik di kantin menggunakan metode *Simple Additive Weighting* (SAW). Sistem mendukung empat peran pengguna: Admin, Developer, Dosen, dan Mahasiswa. Setiap menu dinilai berdasarkan kriteria Harga (cost), Popularitas, Ketersediaan, dan Tingkat Rasa (benefit). Dosen dan mahasiswa dapat memberikan penilaian, admin mengelola data master, dan developer memiliki akses penuh plus alat debugging. Seluruh aktivitas tercatat dalam log sistem.
 
-## About Laravel
+## Fitur Utama
+- Multi-role authentication dan authorization (Admin, Dev, Dosen, Mahasiswa)
+- Manajemen data menu (makanan/minuman)
+- Manajemen kriteria dan bobot SAW
+- Form penilaian oleh dosen/mahasiswa (multi-penilai)
+- Penerapan constraint unik agar satu pengguna hanya satu kali menilai satu menu
+- Perhitungan SAW: normalisasi, pembobotan, perankingan
+- Pencatatan log aktivitas (HTTP method, URL, IP, user agent)
+- Hak akses Developer mencakup seluruh modul Admin ditambah Developer Tools
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Struktur Database
+### Tabel `users`
+| Kolom          | Tipe         | Keterangan                          |
+|----------------|--------------|-------------------------------------|
+| id             | BIGINT PK    | Auto increment                      |
+| nama           | VARCHAR      | Nama lengkap                        |
+| email          | VARCHAR UK   | Unique, untuk login                 |
+| password       | VARCHAR      | Hash bcrypt                         |
+| role           | ENUM         | 'admin','dosen','mahasiswa','dev'   |
+| nomor_induk    | VARCHAR NULL | NIM atau NIDN                       |
+| created_at     | TIMESTAMP    |                                     |
+| updated_at     | TIMESTAMP    |                                     |
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### Tabel `menus`
+| Kolom          | Tipe         | Keterangan                          |
+|----------------|--------------|-------------------------------------|
+| id             | BIGINT PK    | Auto increment                      |
+| nama_menu      | VARCHAR      | Nama menu                           |
+| kategori       | VARCHAR      | Kategori (Makanan Berat, dll)       |
+| harga          | INTEGER      | Harga dalam Rupiah                  |
+| deskripsi      | TEXT NULL    | Penjelasan menu                     |
+| ketersediaan   | ENUM         | 'tersedia','tanpa keterangan','tidak tersedia' |
+| foto           | VARCHAR NULL | Nama file gambar                    |
+| created_at     | TIMESTAMP    |                                     |
+| updated_at     | TIMESTAMP    |                                     |
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### Tabel `kriteria`
+| Kolom          | Tipe         | Keterangan                          |
+|----------------|--------------|-------------------------------------|
+| id             | BIGINT PK    | Auto increment                      |
+| kode_kriteria  | VARCHAR UK   | C1, C2, C3, C4                      |
+| nama_kriteria  | VARCHAR      | Harga, Popularitas, dll             |
+| sifat          | ENUM         | 'cost' atau 'benefit'               |
+| bobot          | FLOAT        | 0.35, 0.25, 0.25, 0.15 (total 1.0) |
+| created_at     | TIMESTAMP    |                                     |
+| updated_at     | TIMESTAMP    |                                     |
 
-## Learning Laravel
+### Tabel `penilaian`
+| Kolom          | Tipe         | Keterangan                          |
+|----------------|--------------|-------------------------------------|
+| id             | BIGINT PK    | Auto increment                      |
+| menu_id        | BIGINT FK    | Referensi menus.id                  |
+| kriteria_id    | BIGINT FK    | Referensi kriteria.id               |
+| user_id        | BIGINT FK    | Referensi users.id                  |
+| nilai          | FLOAT        | Nilai mentah                        |
+| created_at     | TIMESTAMP    |                                     |
+| updated_at     | TIMESTAMP    |                                     |
+| UNIQUE(menu_id, kriteria_id, user_id) |      |                                     |
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### Tabel `system_logs`
+| Kolom          | Tipe         | Keterangan                          |
+|----------------|--------------|-------------------------------------|
+| id             | BIGINT PK    | Auto increment                      |
+| user_id        | BIGINT FK    | Referensi users.id                  |
+| method         | VARCHAR(10)  | GET, POST, PUT, DELETE              |
+| url            | VARCHAR      | URL yang diakses                    |
+| aksi           | VARCHAR      | Deskripsi aktivitas                 |
+| ip_address     | VARCHAR(45) NULL | IP pengguna                     |
+| user_agent     | VARCHAR(500) NULL | User-Agent header               |
+| created_at     | TIMESTAMP    |                                     |
+| updated_at     | TIMESTAMP    |                                     |
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### Relasi
+- users 1 : N system_logs
+- users 1 : N penilaian
+- menus 1 : N penilaian
+- kriteria 1 : N penilaian
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+## Teknologi
+- Laravel 11+ (PHP Framework)
+- Laravel Breeze (starter kit autentikasi)
+- MySQL / MariaDB (database)
+- Blade template engine
 
-## Agentic Development
+## Status Pengembangan Saat Ini
+1. Semua migration telah dibuat dan dijalankan.
+2. Model (User, Menu, Kriteria, Penilaian, SystemLog) sudah terdefinisi dengan relasi.
+3. Middleware `RoleMiddleware` telah dibuat dan didaftarkan di `bootstrap/app.php`.
+4. Seeder untuk 6 akun developer sudah tersedia.
+5. Struktur route dasar sudah disiapkan dengan middleware `auth` dan `role`.
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+## Tugas Pengembangan Selanjutnya (Prioritas)
+### Fase 1 - Data Master dan Dashboard
+- [x] Migration dan model
+- [x] Middleware role
+- [x] Seeder akun developer
+- [ ] **Seeder Kriteria** (C1, C2, C3, C4 beserta bobot dan sifat)
+- [ ] **Seeder Menu** (5-10 menu contoh)
+- [ ] **Seeder User tambahan** (1 admin, 1 dosen, 1 mahasiswa untuk testing)
+- [ ] **Dashboard Controller** – mengarahkan user ke view sesuai role
+- [ ] **Layout Blade** – template utama dengan sidebar dinamis berdasarkan role
 
-```bash
-composer require laravel/boost --dev
+### Fase 2 - Modul Admin & Developer
+- [ ] **Admin/MenuController** (resource) – CRUD menu
+- [ ] **Admin/KriteriaController** (resource) – CRUD kriteria, validasi total bobot = 1
+- [ ] **Admin/UserController** (resource) – Manajemen pengguna (admin hanya mengelola non-dev)
+- [ ] **Admin/LogController** (index) – Menampilkan system log (bisa difilter)
 
-php artisan boost:install
-```
+### Fase 3 - Modul Penilaian (Dosen & Mahasiswa)
+- [ ] **Penilai/PenilaianController** (index, store)
+  - `index()` – Menampilkan daftar menu yang bisa dipilih untuk dinilai
+  - `store()` – Menerima input C2, C3, C4; otomatis mengambil C1 dari harga menu; menyimpan ke tabel penilaian dengan unique constraint
+- [ ] **Form penilaian** – Blade view untuk input rating
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+### Fase 4 - Perhitungan SAW
+- [ ] **Service SAW** – Class khusus untuk logika: mengambil rata-rata nilai per menu per kriteria, normalisasi, perkalian bobot, penjumlahan, pengurutan
+- [ ] **SawController** – Method `index` (halaman perhitungan untuk admin/dev) dan `hasil` (halaman hasil untuk penilai)
+- [ ] **View hasil** – Menampilkan tabel peringkat menu
 
-## Contributing
+### Fase 5 - Logging dan Tools
+- [ ] **Middleware Logger** – Mencatat setiap request (method, URL, IP, user agent) ke tabel system_logs; dapat diaktifkan untuk route tertentu
+- [ ] **DevController** – Halaman Developer Tools (informasi environment, log level, dsb.)
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### Fase 6 - Testing dan Penyempurnaan
+- [ ] Uji setiap role, pastikan constraint unique berfungsi
+- [ ] Perbaikan UI/UX, notifikasi, validasi form
+- [ ] Dokumentasi penggunaan
 
-## Code of Conduct
+## Pembagian Tugas Tim (6 Anggota)
+| Anggota | Fokus |
+|---------|-------|
+| 1 | Seeder (Kriteria, Menu, User), Dashboard Controller, Layout |
+| 2 | Admin MenuController + view CRUD menu |
+| 3 | Admin KriteriaController + validasi bobot, Admin UserController |
+| 4 | Penilai PenilaianController + form penilaian |
+| 5 | SAW Service + SawController + view hasil |
+| 6 | Middleware Logger, Admin LogController, DevController |
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## Catatan Penting
+- Semua route yang memerlukan autentikasi sudah dibungkus middleware `auth`.
+- Route Admin/Dev dipisahkan dari route Penilai menggunakan middleware `role:admin,dev` dan `role:dosen,mahasiswa`.
+- Penilaian menggunakan composite unique key untuk mencegah duplikasi penilaian.
+- Nilai C1 (Harga) tidak diinput manual oleh penilai, tetapi diambil otomatis dari tabel menus.
+- Ketersediaan pada tabel menus saat ini bertipe ENUM; apabila akan digunakan langsung dalam perhitungan, harus dikonversi ke integer melalui accessor di model.
+- Pastikan file `.env` sudah dikonfigurasi untuk database sebelum menjalankan migrate dan seed.
