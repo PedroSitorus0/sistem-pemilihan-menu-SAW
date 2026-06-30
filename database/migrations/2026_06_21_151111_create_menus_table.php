@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('kategori', 50);
             $table->integer('harga');
             $table->text('deskripsi')->nullable();
-            $table->enum('ketersediaan,', ['tersedia', 'tanpa keterangan', 'tidak tersedia']);
+            $table->enum('ketersediaan', ['tersedia', 'tanpa keterangan', 'tidak tersedia']);
             $table->string('foto', 255)->nullable();
             $table->timestamps();
         });
