@@ -1,3 +1,1 @@
-<div>
-    <!-- He who is contented is rich. - Laozi -->
-</div>
+<h1>Halo, ini view punya Gisti!</h1>
