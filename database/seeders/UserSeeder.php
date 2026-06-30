@@ -23,7 +23,7 @@ class UserSeeder extends Seeder
         ['nama' => 'Zianka Nurazizah', 'email' => 'ziankanurazizah@gmail.com'],
        ];
 
-       
+        
        $defaultPassword = Hash::make('admin123'); //ini password komdigi;
        foreach ($users as $user) {
         User::create([

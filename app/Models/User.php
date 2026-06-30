@@ -3,7 +3,8 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Database\Factories\UserFactory;
+use App\Models\Penilaian;
+use App\Models\SystemLog;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -28,5 +29,32 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    protected $fillable = [
+        'nama',
+        'email',
+        'password',
+        'role',
+        'nomor_induk',
+    ];
+
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
+
+    protected $casts = [
+        'role' => 'string',
+    ];
+
+    public function systemLogs()
+    {
+        return $this->hasMany(SystemLog::class);
+    }
+
+    public function penilaian()
+    {
+        return $this->hasMany(Penilaian::class);
     }
 }
