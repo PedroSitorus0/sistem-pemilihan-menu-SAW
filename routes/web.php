@@ -1,8 +1,8 @@
 <?php
 
-use App\Http\Controllers\Admin\KriteriaController;
 use App\Http\Controllers\Admin\LogController;
-use App\Http\Controllers\Admin\MenuController;
+use App\Http\Controllers\KriteriaController;
+use App\Http\Controllers\MenuController;
 use App\Http\Controllers\Penilai\PenilaianController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SawController;
@@ -44,5 +44,6 @@ Route::middleware(['auth', 'role:admin,dev'])->group(function () {
 Route::middleware(['auth', 'role:dosen,mahasiswa'])->group(function () {
     Route::get('/hasil', [SawController::class, 'hasil'])->name('saw.hasil');
 });
+
 
 require __DIR__.'/auth.php';
