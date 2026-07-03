@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('phone', 30)->unique()->nullable();
             $table->string('nomor_induk', 50)->unique()->nullable();
             $table->string('password');
-            $table->enum('role',['admin', 'mahasiswa', 'dev']);
+            $table->enum('role',['admin', 'mahasiswa', 'dev'])->default('mahasiswa');
             $table->rememberToken();
             $table->timestamps();
         });
