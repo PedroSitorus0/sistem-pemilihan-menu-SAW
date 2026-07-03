@@ -27,15 +27,16 @@ Route::middleware('auth')->group(function () {
 
     Route::middleware(['role:admin,dev'])->group(function() {
         Route::resource('menus', MenuController::class);
+        Route::resource('kriteria', KriteriaController::class);
     });
 });
 
-Route::middleware(['auth', 'role:admin,dev'])->prefix('admin')->name('admin.')->group(function () {
-    Route::resource('menu', MenuController::class);
-    Route::resource('kriteria', KriteriaController::class);
-    Route::resource('user', UserController::class);
-    Route::get('log', [LogController::class, 'index'])->name('log.index');
-});
+// Route::middleware(['auth', 'role:admin,dev'])->prefix('admin')->name('admin.')->group(function () {
+//     Route::resource('menu', MenuController::class);
+//     Route::resource('kriteria', KriteriaController::class);
+//     Route::resource('user', UserController::class);
+//     Route::get('log', [LogController::class, 'index'])->name('log.index');
+// });
 
 Route::middleware(['auth', 'role:dosen,mahasiswa'])->prefix('penilaian')->name('penilaian.')->group(function () {
     Route::get('/', [PenilaianController::class, 'index'])->name('index');
