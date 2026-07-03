@@ -8,10 +8,15 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SawController;
 use App\Http\Controllers\User\UserController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\View\View;
 
 Route::get('/', function () {
     return view('welcome');
 });
+
+// Route::get('/errors', function() {
+//     abort(500);
+// });
 
 Route::get('/dashboard', function () {
     return view('dashboard');

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Kriteria;
+use Illuminate\Auth\Events\Validated;
 use Illuminate\Http\Request;
 
 class KriteriaController extends Controller
@@ -70,11 +71,16 @@ class KriteriaController extends Controller
     public function update(Request $request, Kriteria $kriterium)
     {
         $validated = $request->validate([
-            'kode_kriteria' => 'required|string|max:2|unique:kriteria|kode_kriteria' .$kriterium->id,
+            'kode_kriteria' => 'required|string|max:2|unique:kriteria,kode_kriteria' .$kriterium->id,
             'nama_kriteria' => 'required|string|max:20',
-            'sifat' => 'required|in:cost, benefit',
+            'sifat' => 'required|in:cost,benefit',
             'bobot' => 'required|numeric|min:0|max:1',
         ]);
+        $totalBobotLainnya = Kriteria::where('id' != $kriterium->id)->sum('bobot');
+        if ($totalBobotLainnya + $validated['bobot'] > 1) {
+            return back()->withInput()->with('error', "Total Bobot melebihi 1 setelah diperbaharui");
+        }        
+
 
         $kriterium->update($validated);
 

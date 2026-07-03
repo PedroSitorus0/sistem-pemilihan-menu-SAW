@@ -1,53 +1,74 @@
-@extends('layouts.admin')
+<x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            {{ __('Edit Kriteria') }}
+        </h2>
+    </x-slot>
 
-@section('content')
-<div class="container">
-    <h2>Edit Kriteria</h2>
+    <div class="py-12">
+        <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="p-6 text-gray-900">
+                    
+                    <form action="{{ route('kriteria.update', $kriterium->id) }}" method="POST">
+                        @csrf
+                        @method('PUT')
 
-    <form action="{{ route('kriteria.update', $kriterium) }}" method="POST">
-        @csrf
-        @method('PUT')
+                        <div class="mb-4">
+                            <label for="kode_kriteria" class="block text-sm font-medium text-gray-700">Kode Kriteria</label>
+                            <input type="text" name="kode_kriteria" id="kode_kriteria" 
+                                value="{{ old('kode_kriteria', $kriterium->kode_kriteria) }}" 
+                                maxlength="2" readonly
+                                class="mt-1 block w-full border-gray-300 bg-gray-100 cursor-not-allowed rounded-md shadow-sm text-gray-500">
+                            @error('kode_kriteria')
+                                <span class="text-sm text-red-600">{{ $message }}</span>
+                            @enderror
+                        </div>
 
-        <div class="mb-3">
-            <label>Kode Kriteria</label>
-            <input type="text" name="kode_kriteria" class="form-control"
-                   maxlength="2" value="{{ old('kode_kriteria', $kriterium->kode_kriteria) }}" readonly>
-            @error('kode_kriteria')
-                <small class="text-danger">{{ $message }}</small>
-            @enderror
+                        <div class="mb-4">
+                            <label for="nama_kriteria" class="block text-sm font-medium text-gray-700">Nama Kriteria</label>
+                            <input type="text" name="nama_kriteria" id="nama_kriteria" 
+                                value="{{ old('nama_kriteria', $kriterium->nama_kriteria) }}" 
+                                class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" required>
+                            @error('nama_kriteria')
+                                <span class="text-sm text-red-600">{{ $message }}</span>
+                            @enderror
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="sifat" class="block text-sm font-medium text-gray-700">Sifat</label>
+                            <select name="sifat" id="sifat" class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" required>
+                                <option value="cost" {{ old('sifat', $kriterium->sifat) == 'cost' ? 'selected' : '' }}>Cost</option>
+                                <option value="benefit" {{ old('sifat', $kriterium->sifat) == 'benefit' ? 'selected' : '' }}>Benefit</option>
+                            </select>
+                            @error('sifat')
+                                <span class="text-sm text-red-600">{{ $message }}</span>
+                            @enderror
+                        </div>
+
+                        <div class="mb-6">
+                            <label for="bobot" class="block text-sm font-medium text-gray-700">Bobot (0 – 1)</label>
+                            <input type="number" name="bobot" id="bobot" 
+                                value="{{ old('bobot', $kriterium->bobot) }}" 
+                                step="0.01" min="0" max="1" 
+                                class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" required>
+                            @error('bobot')
+                                <span class="text-sm text-red-600">{{ $message }}</span>
+                            @enderror
+                        </div>
+
+                        <div class="flex items-center gap-4">
+                            <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition">
+                                Perbarui
+                            </button>
+                            <a href="{{ route('kriteria.index') }}" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition">
+                                Batal
+                            </a>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
         </div>
-
-        <div class="mb-3">
-            <label>Nama Kriteria</label>
-            <input type="text" name="nama_kriteria" class="form-control"
-                   value="{{ old('nama_kriteria', $kriterium->nama_kriteria) }}" required>
-            @error('nama_kriteria')
-                <small class="text-danger">{{ $message }}</small>
-            @enderror
-        </div>
-
-        <div class="mb-3">
-            <label>Sifat</label>
-            <select name="sifat" class="form-control" required>
-                <option value="cost" {{ old('sifat', $kriterium->sifat) == 'cost' ? 'selected' : '' }}>Cost</option>
-                <option value="benefit" {{ old('sifat', $kriterium->sifat) == 'benefit' ? 'selected' : '' }}>Benefit</option>
-            </select>
-            @error('sifat')
-                <small class="text-danger">{{ $message }}</small>
-            @enderror
-        </div>
-
-        <div class="mb-3">
-            <label>Bobot (0 – 1)</label>
-            <input type="number" name="bobot" class="form-control"
-                   step="0.01" min="0" max="1" value="{{ old('bobot', $kriterium->bobot) }}" required>
-            @error('bobot')
-                <small class="text-danger">{{ $message }}</small>
-            @enderror
-        </div>
-
-        <button type="submit" class="btn btn-success">Perbarui</button>
-        <a href="{{ route('kriteria.index') }}" class="btn btn-secondary">Batal</a>
-    </form>
-</div>
-@endsection
+    </div>
+</x-app-layout>
