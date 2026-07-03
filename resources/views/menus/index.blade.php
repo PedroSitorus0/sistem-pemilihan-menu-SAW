@@ -1,40 +1,68 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="csrf-token" content="{{ csrf_token() }}">
+<x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            {{ __('Daftar Menu') }}
+        </h2>
+    </x-slot>
 
-        <title>{{ config('app.name', 'Laravel') }}</title>
+    <style>
+        .dt-length select {
+            padding-right: 2.5rem !important;
+            background-position: right 0.5rem center !important;
+            width: auto !important;
+        }
+    </style>
 
-        <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
-
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
-
-        <link rel="stylesheet" href="https://cdn.datatables.net/2.0.8/css/dataTables.tailwindcss.css">
-    </head>
-    <body class="font-sans antialiased">
-        <div class="min-h-screen bg-gray-100">
-            @include('layouts.navigation')
-
-            @isset($header)
-                <header class="bg-white shadow">
-                    <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                        {{ $header }}
+    <div class="py-12">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="p-6 text-gray-900">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-bold">Data Menu</h3>
+                        <a href="{{ route('menus.create') }}" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+                            + Tambah Menu
+                        </a>
                     </div>
-                </header>
-            @endisset
 
-            <main>
-                {{ $slot }}
-            </main>
+                    @if(session('success'))
+                        <div class="mb-4 p-4 bg-green-100 text-green-700 rounded">
+                            {{ session('success') }}
+                        </div>
+                    @endif
+
+                    <div class="overflow-x-auto">
+                        <table id="table" class="w-full text-sm text-left text-gray-500">
+                            <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3">Nama Menu</th>
+                                    <th class="px-6 py-3">Kategori</th>
+                                    <th class="px-6 py-3">Harga</th>
+                                    <th class="px-6 py-3">Status</th>
+                                    <th class="px-6 py-3">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($menus as $menu)
+                                <tr class="bg-white border-b">
+                                    <td class="px-6 py-4 font-medium text-gray-900">{{ $menu->nama_menu }}</td>
+                                    <td class="px-6 py-4">{{ $menu->kategori }}</td>
+                                    <td class="px-6 py-4">Rp {{ number_format($menu->harga, 0, ',', '.') }}</td>
+                                    <td class="px-6 py-4">{{ ucfirst($menu->ketersediaan) }}</td>
+                                    <td class="px-6 py-4 flex gap-2">
+                                        <a href="{{ route('menus.edit', $menu->id) }}" class="text-blue-600 hover:underline">Edit</a>
+                                        <form action="{{ route('menus.destroy', $menu->id) }}" method="POST" onsubmit="return confirm('Hapus menu ini?');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="text-red-600 hover:underline">Hapus</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                    </div>
+            </div>
         </div>
-
-        <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-        <script src="https://cdn.datatables.net/2.0.8/js/dataTables.js"></script>
-        <script src="https://cdn.datatables.net/2.0.8/js/dataTables.tailwindcss.js"></script>
-
-        @stack('scripts')
-    </body>
-</html>
+    </div>
+</x-app-layout>

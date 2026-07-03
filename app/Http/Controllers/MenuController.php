@@ -13,7 +13,7 @@ class MenuController extends Controller
      */
     public function index()
     {
-        $menus = Menu::latest()->get();
+        $menus = Menu::latest()->paginate(10);
         return view('menus.index', compact('menus'));
     }
 
@@ -57,7 +57,7 @@ class MenuController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Menu $menu)
     {
         return view('menus.edit', compact('menu'));
     }
