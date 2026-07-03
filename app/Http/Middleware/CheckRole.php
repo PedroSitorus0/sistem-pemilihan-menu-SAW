@@ -7,15 +7,15 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
-class RoleMiddleware
+
+class CheckRole 
 {
     /**
      * Handle an incoming request.
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
-     * @param  string  ...$roles  Daftar role yang diizinkan
      */
-    public function handle(Request $request, Closure $next, ...$roles): Response
+    public function handle(Request $request, Closure $next): Response
     {
         // Pastikan user sudah login
         if (!Auth::check()) {
@@ -24,9 +24,9 @@ class RoleMiddleware
 
         $userRole = Auth::user()->role;
 
-        // Jika role user tidak ada dalam daftar yang diizinkan
-        if (!in_array($userRole, $roles)) {
-            abort(403, 'Anda tidak memiliki akses ke halaman ini.');
+        // Jika role BUKAN 'admin' DAN BUKAN 'dev', maka tampilkan 403
+        if ($userRole !== 'admin' && $userRole !== 'dev') {
+            abort(403, 'Akses Ditolak: Hanya Admin dan Developer yang diizinkan untuk mengelola menu aplikasi.');
         }
 
         return $next($request);
