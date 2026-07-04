@@ -10,67 +10,94 @@ use Illuminate\Support\Facades\DB;
 
 class SawController extends Controller
 {
-    /**
-     * Menampilkan proses dan hasil perhitungan SAW (untuk admin/dev).
-     */
     public function index()
     {
-    // Cukup panggil method hitungSaw() agar kode lebih rapi
-    $hasil = $this->hitungSaw();
-    $kriteria = Kriteria::all();
-    $menus = Menu::all();
-    
-    // Untuk index, kita mungkin butuh matriks juga jika ingin ditampilkan di view
-    return view('saw.index', compact('kriteria', 'menus', 'hasil'));
+        // Panggil fungsi perhitungan, ambil semua data mentah dan hasil
+        $data = $this->hitungSaw();
+        return view('saw.index', $data);
     }
 
-    /**
-     * Menampilkan hasil akhir untuk penilai (tanpa detail perhitungan).
-     */
-    private function hitungSaw()
-{
-    $kriteria = Kriteria::all();
-    $menus = Menu::all();
-    
-    // OPTIMASI: Ambil data sekaligus dan simpan dalam array asosiatif (cepat!)
-    $rataRata = Penilaian::select('menu_id', 'kriteria_id', DB::raw('AVG(nilai) as rata'))
-        ->groupBy('menu_id', 'kriteria_id')
-        ->get();
-
-    $matriks = [];
-    foreach ($rataRata as $item) {
-        $matriks[$item->menu_id][$item->kriteria_id] = $item->rata;
-    }
-
-    // Cari Max/Min
-    $maxMin = [];
-    foreach ($kriteria as $k) {
-        $nilaiKriteria = [];
-        foreach ($menus as $m) {
-            $nilaiKriteria[] = $matriks[$m->id][$k->id] ?? 0;
-        }
+   public function hasil()
+    {
+        // Ambil semua data dari fungsi perhitungan
+        $data = $this->hitungSaw();
         
-        $maxMin[$k->id] = ($k->sifat === 'benefit') ? (max($nilaiKriteria) ?: 1) : (min($nilaiKriteria) ?: 1);
+        $hasil = $data['hasil'];
+        $kriteria = $data['kriteria']; // <-- Tambahkan baris ini untuk mengambil kriteria
+
+        // Kirim 'hasil' dan 'kriteria' ke view
+        return view('saw.hasil', compact('hasil', 'kriteria')); 
     }
 
-    // Hitung SAW
-    $hasil = [];
-    foreach ($menus as $menu) {
-        $total = 0;
-        foreach ($kriteria as $k) {
-            $nilaiAsli = $matriks[$menu->id][$k->id] ?? 0;
-            $normal = ($k->sifat === 'benefit') ? ($nilaiAsli / $maxMin[$k->id]) : ($maxMin[$k->id] / $nilaiAsli);
-            $total += $normal * $k->bobot;
+    private function hitungSaw()
+    {
+        $kriteria = Kriteria::all();
+        $menus = Menu::all();
+        
+        // 1. Ambil rata-rata penilaian
+        $rataRata = Penilaian::select('menu_id', 'kriteria_id', DB::raw('AVG(nilai) as rata'))
+            ->groupBy('menu_id', 'kriteria_id')
+            ->get();
+
+        // 2. Bentuk Matriks Keputusan (X)
+        $matriks = [];
+        foreach ($rataRata as $item) {
+            $matriks[$item->menu_id][$item->kriteria_id] = $item->rata;
         }
-        $hasil[] = ['menu' => $menu, 'skor' => $total];
-    }
 
-    usort($hasil, fn($a, $b) => $b['skor'] <=> $a['skor']);
-    
-    foreach ($hasil as $i => &$item) {
-        $item['peringkat'] = $i + 1;
+        // Cari Nilai Max/Min per kriteria
+        $maxMin = [];
+        foreach ($kriteria as $k) {
+            $nilaiKriteria = [];
+            foreach ($menus as $m) {
+                $nilaiKriteria[] = $matriks[$m->id][$k->id] ?? 0;
+            }
+            $maxMin[$k->id] = ($k->sifat === 'benefit') ? (max($nilaiKriteria) ?: 1) : (min($nilaiKriteria) ?: 1);
+        }
+
+        // 3. Matriks Normalisasi (R) & Perhitungan Skor Akhir (V)
+        // 3. Matriks Normalisasi (R) & Perhitungan Skor Akhir (V)
+        $normalisasi = [];
+        $hasil = [];
+        
+        foreach ($menus as $menu) {
+            $totalSkor = 0;
+            $kriteria_scores = []; // <-- TAMBAHKAN INI
+
+            foreach ($kriteria as $k) {
+                $nilaiAsli = $matriks[$menu->id][$k->id] ?? 0;
+                $kriteria_scores[$k->id] = $nilaiAsli; // <-- SIMPAN DATA ASLI UNTUK SORTING
+                
+                // Hitung Normalisasi
+                $norm = ($k->sifat === 'benefit') 
+                        ? ($nilaiAsli / $maxMin[$k->id]) 
+                        : ($maxMin[$k->id] / ($nilaiAsli ?: 1));
+                        
+                $normalisasi[$menu->id][$k->id] = $norm;
+                $totalSkor += $norm * $k->bobot;
+            }
+            $hasil[] = [
+                'menu' => $menu, 
+                'skor' => $totalSkor,
+                'kriteria_scores' => $kriteria_scores // <-- LEMPAR KE ARRAY HASIL
+            ];
+        }
+
+        // 4. Urutkan berdasarkan skor tertinggi ke terendah
+        usort($hasil, fn($a, $b) => $b['skor'] <=> $a['skor']);
+        
+        // Beri Peringkat
+        foreach ($hasil as $index => &$item) {
+            $item['peringkat'] = $index + 1;
+        }
+
+        // Kembalikan semua variabel yang dibutuhkan View
+        return [
+            'kriteria' => $kriteria,
+            'menus' => $menus,
+            'matriks' => $matriks,
+            'normalisasi' => $normalisasi,
+            'hasil' => $hasil
+        ];
     }
-    
-    return $hasil;
-}
 }
