@@ -99,28 +99,28 @@ Aplikasi berbasis web untuk membantu pemilihan menu terbaik di kantin menggunaka
 - [x] Migration dan model
 - [x] Middleware role
 - [x] Seeder akun developer
-- [ ] **Seeder Kriteria** (C1, C2, C3, C4 beserta bobot dan sifat)
+- [x] Seeder Kriteria (C1, C2, C3, C4 beserta bobot dan sifat)
 - [ ] **Seeder Menu** (5-10 menu contoh)
 - [ ] **Seeder User tambahan** (1 admin, 1 dosen, 1 mahasiswa untuk testing)
 - [ ] **Dashboard Controller** – mengarahkan user ke view sesuai role
-- [ ] **Layout Blade** – template utama dengan sidebar dinamis berdasarkan role
+- [x] Layout Blade – template utama dengan sidebar dinamis berdasarkan role
 
 ### Fase 2 - Modul Admin & Developer
-- [ ] **Admin/MenuController** (resource) – CRUD menu
-- [ ] **Admin/KriteriaController** (resource) – CRUD kriteria, validasi total bobot = 1
-- [ ] **Admin/UserController** (resource) – Manajemen pengguna (admin hanya mengelola non-dev)
-- [ ] **Admin/LogController** (index) – Menampilkan system log (bisa difilter)
+- [x] Admin/MenuController (resource) – CRUD menu
+- [x] Admin/KriteriaController (resource) – CRUD kriteria, validasi total bobot = 1
+- [x] Admin/UserController (resource) – Manajemen pengguna (admin hanya mengelola non-dev)
+- [x] Admin/LogController (index) – Menampilkan system log (bisa difilter)
 
 ### Fase 3 - Modul Penilaian (Dosen & Mahasiswa)
-- [ ] **Penilai/PenilaianController** (index, store)
+- [x] Penilai/PenilaianController (index, store)
   - `index()` – Menampilkan daftar menu yang bisa dipilih untuk dinilai
   - `store()` – Menerima input C2, C3, C4; otomatis mengambil C1 dari harga menu; menyimpan ke tabel penilaian dengan unique constraint
-- [ ] **Form penilaian** – Blade view untuk input rating
+- [x] Form penilaian – Blade view untuk input rating
 
 ### Fase 4 - Perhitungan SAW
-- [ ] **Service SAW** – Class khusus untuk logika: mengambil rata-rata nilai per menu per kriteria, normalisasi, perkalian bobot, penjumlahan, pengurutan
-- [ ] **SawController** – Method `index` (halaman perhitungan untuk admin/dev) dan `hasil` (halaman hasil untuk penilai)
-- [ ] **View hasil** – Menampilkan tabel peringkat menu
+- [x] Service SAW – Class khusus untuk logika: mengambil rata-rata nilai per menu per kriteria, normalisasi, perkalian bobot, penjumlahan, pengurutan
+- [x] SawController – Method `index` (halaman perhitungan untuk admin/dev) dan `hasil` (halaman hasil untuk penilai)
+- [x] View hasil – Menampilkan tabel peringkat menu
 
 ### Fase 5 - Logging dan Tools
 - [ ] **Middleware Logger** – Mencatat setiap request (method, URL, IP, user agent) ke tabel system_logs; dapat diaktifkan untuk route tertentu

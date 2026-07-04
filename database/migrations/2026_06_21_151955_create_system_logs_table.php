@@ -13,13 +13,18 @@ return new class extends Migration
     {
         Schema::create('system_logs', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('cascade');
             $table->string('method', 10); // GET, POST, PUT, PATCH, DELETE;
             $table->string('url');
             $table->string('ip_address', 45)->nullable();
             $table->string('user_agent', 500)->nullable();
             $table->string('aksi');
             $table->timestamps();
+
+
+            $table->index('user_id');
+            $table->index('method');
+            $table->index('created_at');
         });
     }
 
