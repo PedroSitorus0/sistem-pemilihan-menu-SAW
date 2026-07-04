@@ -3,7 +3,7 @@
 use App\Http\Controllers\Admin\LogController;
 use App\Http\Controllers\KriteriaController;
 use App\Http\Controllers\MenuController;
-use App\Http\Controllers\Penilai\PenilaianController;
+use App\Http\Controllers\PenilaianController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SawController;
 use App\Http\Controllers\User\UserController;
@@ -29,6 +29,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('kriteria', KriteriaController::class);
     Route::resource('user', UserController::class);
     Route::get('log', [LogController::class, 'index'])->name('log.index');
+    Route::resource('/penilaian', PenilaianController::class);
 
     Route::middleware(['role:admin,dev'])->group(function() {
         Route::resource('menus', MenuController::class);
@@ -43,10 +44,10 @@ Route::middleware('auth')->group(function () {
 //     Route::get('log', [LogController::class, 'index'])->name('log.index');
 // });
 
-Route::middleware(['auth', 'role:dosen,mahasiswa'])->prefix('penilaian')->name('penilaian.')->group(function () {
-    Route::get('/', [PenilaianController::class, 'index'])->name('index');
-    Route::post('/', [PenilaianController::class, 'store'])->name('store');
-});
+// Route::middleware(['auth', 'role:dosen,mahasiswa'])->prefix('penilaian')->name('penilaian.')->group(function () {
+//     Route::get('/', [PenilaianController::class, 'index'])->name('index');
+//     Route::post('/', [PenilaianController::class, 'store'])->name('store');
+// });
 
 // Admin & Dev
 Route::middleware(['auth', 'role:admin,dev'])->group(function () {

@@ -39,7 +39,7 @@
             </div>
         </div>
 
-        <div class="flex-1 w-full relative">
+        <div class="flex-1 w-full max-w-lg relative animate-fade-in">
             <div class="aspect-video bg-white rounded-2xl shadow-2xl border-4 border-white p-2 transform rotate-2 hover:rotate-0 transition-transform duration-500">
                 <div class="w-full h-full bg-slate-200 rounded-xl flex items-center justify-center border-2 border-dashed border-slate-300 group">
                     <span class="text-slate-400 group-hover:text-indigo-500 transition">
