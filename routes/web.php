@@ -1,7 +1,8 @@
 <?php
 
-use App\Http\Controllers\Admin\LogController;
+
 use App\Http\Controllers\KriteriaController;
+use App\Http\Controllers\LogController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\PenilaianController;
 use App\Http\Controllers\ProfileController;
@@ -28,7 +29,6 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::resource('kriteria', KriteriaController::class);
     Route::resource('user', UserController::class);
-    Route::get('log', [LogController::class, 'index'])->name('log.index');
     Route::resource('/penilaian', PenilaianController::class);
     Route::get('/rekomendasi-menu',[SawController::class, 'hasil'])->name('saw.hasil');
 
@@ -37,6 +37,21 @@ Route::middleware('auth')->group(function () {
         Route::resource('kriteria', KriteriaController::class);
         Route::resource('users', UserController::class);
         Route::get('/perhitungan-saw', [SawController::class, 'index'])->name('saw.index');
+    });
+
+    Route::middleware(['role:dev'])->group(function() {
+        Route::prefix('logs')->name('logs.')->group(function () {
+        
+        // 1. Route spesifik/statis HARUS diletakkan paling atas
+        Route::get('/export', [LogController::class, 'export'])->name('export');
+        Route::post('/clear', [LogController::class, 'clearOldLogs'])->name('clear');
+        
+        // 2. Route utama & dinamis diletakkan di bawah
+        Route::get('/', [LogController::class, 'index'])->name('index');
+        Route::get('/{id}', [LogController::class, 'show'])->name('show');
+        Route::delete('/{id}', [LogController::class, 'destroy'])->name('destroy');
+        
+    });
     });
 });
 

@@ -204,6 +204,7 @@
 				    @endphp
 				    <div class="menu-card group flex flex-col bg-white rounded-2xl overflow-hidden transition-all duration-300 shadow-[0_1px_2px_rgba(24,18,15,0.06)] border border-[#EAE6DF] hover:shadow-[0_20px_32px_-16px_rgba(24,18,15,0.18)] hover:border-[#DFDAD1] hover:-translate-y-1"
 				         data-skor="{{ $item['skor'] }}"
+						 data-harga = {{$item['menu']->harga}}
 				         @foreach($item['kriteria_scores'] as $idKriteria => $nilai)
 				             data-kriteria-{{ $idKriteria }}="{{ $nilai }}"
 				         @endforeach
@@ -368,47 +369,122 @@
 				});
 			    }
 
-			    selectElement.addEventListener('change', function() {
+			//     selectElement.addEventListener('change', function() {
+			// 	let cards = Array.from(container.getElementsByClassName('menu-card'));
+			// 	let sortValue = this.value;
+
+			// 	cards.sort(function(a, b) {
+			// 	    if (sortValue === 'spk_desc') {
+			// 	        return parseFloat(b.dataset.skor) - parseFloat(a.dataset.skor);
+			// 	    }
+			// 	    else if (sortValue.startsWith('kriteria_')) {
+			// 	        let parts = sortValue.split('_');
+			// 	        let kriteriaId = parts[1];
+			// 	        let sifat = parts[2];
+
+			// 	        let nilaiA = parseFloat(a.getAttribute('data-kriteria-' + kriteriaId));
+			// 	        let nilaiB = parseFloat(b.getAttribute('data-kriteria-' + kriteriaId));
+
+			// 	        if (sifat.toLowerCase() === 'cost') {
+			// 	            return nilaiA - nilaiB;
+			// 	        }
+			// 	        else {
+			// 	            return nilaiB - nilaiA;
+			// 	        }
+			// 	    }
+			// 	});
+
+			// 	// Update styling cards sesuai urutan baru
+			// 	updateCardStyles(cards);
+
+			// 	container.style.opacity = '0';
+			// 	setTimeout(() => {
+			// 	    container.innerHTML = '';
+			// 	    cards.forEach(card => container.appendChild(card));
+			// 	    container.style.opacity = '1';
+			// 	}, 200);
+			//     });
+
+			//     container.style.transition = 'opacity 0.2s ease-in-out';
+
+			//     // Initialize styling on page load
+			//     let initialCards = Array.from(container.getElementsByClassName('menu-card'));
+			//     updateCardStyles(initialCards);
+			// });
+
+			selectElement.addEventListener('change', function() {
 				let cards = Array.from(container.getElementsByClassName('menu-card'));
 				let sortValue = this.value;
+				let activeLabel = labelElement.textContent.toLowerCase(); // Ambil teks label yang sedang aktif
 
 				cards.sort(function(a, b) {
 				    if (sortValue === 'spk_desc') {
-				        return parseFloat(b.dataset.skor) - parseFloat(a.dataset.skor);
+				        return (parseFloat(b.dataset.skor) || 0) - (parseFloat(a.dataset.skor) || 0);
 				    }
 				    else if (sortValue.startsWith('kriteria_')) {
 				        let parts = sortValue.split('_');
 				        let kriteriaId = parts[1];
 				        let sifat = parts[2];
 
-				        let nilaiA = parseFloat(a.getAttribute('data-kriteria-' + kriteriaId));
-				        let nilaiB = parseFloat(b.getAttribute('data-kriteria-' + kriteriaId));
+				        // ========================================================
+				        // FIX 1: LOGIKA CERDAS UNTUK HARGA
+				        // Jika label dropdown mengandung kata "harga", paksa JS 
+				        // untuk mengurutkan berdasarkan nominal Rp asli, bukan matriks.
+				        // ========================================================
+				        if (activeLabel.includes('harga')) {
+				            let hargaA = parseFloat(a.dataset.harga) || 0;
+				            let hargaB = parseFloat(b.dataset.harga) || 0;
+				            // Cost = Termurah ke termahal. Benefit = Termahal ke termurah.
+				            return sifat === 'cost' ? (hargaA - hargaB) : (hargaB - hargaA);
+				        }
+
+				        // Logika default untuk Ketersediaan, Popularitas, Rasa, dll
+				        let nilaiA = parseFloat(a.getAttribute('data-kriteria-' + kriteriaId)) || 0;
+				        let nilaiB = parseFloat(b.getAttribute('data-kriteria-' + kriteriaId)) || 0;
+
+				        // Jika nilai kriteria sama persis, gunakan Skor SPK sebagai penentu (Tie-breaker)
+				        if (nilaiA === nilaiB) {
+				            return (parseFloat(b.dataset.skor) || 0) - (parseFloat(a.dataset.skor) || 0);
+				        }
 
 				        if (sifat.toLowerCase() === 'cost') {
 				            return nilaiA - nilaiB;
-				        }
-				        else {
+				        } else {
 				            return nilaiB - nilaiA;
 				        }
 				    }
+				    return 0;
 				});
 
-				// Update styling cards sesuai urutan baru
-				updateCardStyles(cards);
+				// ========================================================
+				// FIX 2: ANIMASI REALTIME DOM
+				// Menggunakan appendChild (memindahkan elemen) alih-alih 
+				// innerHTML='' agar DOM tidak rusak dan merespon instan
+				// ========================================================
+				container.style.opacity = '0.3';
+				container.style.transform = 'translateY(12px)';
 
-				container.style.opacity = '0';
 				setTimeout(() => {
-				    container.innerHTML = '';
+				    // Reorder elemen di dalam DOM
 				    cards.forEach(card => container.appendChild(card));
+				    
+				    // Update visual (Nomor urut 01, 02, dan Badge Terbaik)
+				    updateCardStyles(cards);
+
+				    // Kembalikan opacity
 				    container.style.opacity = '1';
-				}, 200);
+				    container.style.transform = 'translateY(0)';
+				}, 150); // Waktu transisi dipercepat
 			    });
 
-			    container.style.transition = 'opacity 0.2s ease-in-out';
+			    // Tambahkan efek transisi mulus pada container
+			    container.style.transition = 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)';
 
-			    // Initialize styling on page load
+			    // Initialize styling saat halaman pertama dimuat
 			    let initialCards = Array.from(container.getElementsByClassName('menu-card'));
 			    updateCardStyles(initialCards);
 			});
 		    </script>
+
+			
 		</x-app-layout>

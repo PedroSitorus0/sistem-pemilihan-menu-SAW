@@ -38,6 +38,12 @@
                             {{ __('Manajemen Pengguna') }}
                         </x-nav-link>
                     @endif
+                    
+                    @if(auth()->user()->role === 'dev')
+                        <x-nav-link :href="route('logs.index')" :active="request()->routeIs('logs.*')">
+                            {{ __('Log Aktivitas') }}
+                        </x-nav-link>
+                    @endif
                 </div>
             </div>
 

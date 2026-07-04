@@ -48,7 +48,7 @@ class User extends Authenticatable
         'role' => 'string',
     ];
 
-    public function systemLogs()
+    public function logs()
     {
         return $this->hasMany(SystemLog::class);
     }
@@ -57,4 +57,5 @@ class User extends Authenticatable
     {
         return $this->hasMany(Penilaian::class);
     }
+
 }
