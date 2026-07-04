@@ -1,52 +1,71 @@
-@extends('layouts.admin')
+<x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            {{ __('Tambah Kriteria') }}
+        </h2>
+    </x-slot>
 
-@section('content')
-<div class="container">
-    <h2>Tambah Kriteria</h2>
+    <div class="py-12">
+        <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="p-6 text-gray-900">
+                    
+                    <form action="{{ route('kriteria.store') }}" method="POST">
+                        @csrf
 
-    <form action="{{ route('kriteria.store') }}" method="POST">
-        @csrf
+                        <div class="mb-4">
+                            <label for="kode_kriteria" class="block text-sm font-medium text-gray-700">Kode Kriteria</label>
+                            <input type="text" name="kode_kriteria" id="kode_kriteria" value="{{ old('kode_kriteria') }}" 
+                                maxlength="2" 
+                                class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" required>
+                            @error('kode_kriteria')
+                                <span class="text-sm text-red-600">{{ $message }}</span>
+                            @enderror
+                        </div>
 
-        <div class="mb-3">
-            <label>Kode Kriteria</label>
-            <input type="text" name="kode_kriteria" class="form-control"
-                   maxlength="2" value="{{ old('kode_kriteria') }}" required>
-            @error('kode_kriteria')
-                <small class="text-danger">{{ $message }}</small>
-            @enderror
+                        <div class="mb-4">
+                            <label for="nama_kriteria" class="block text-sm font-medium text-gray-700">Nama Kriteria</label>
+                            <input type="text" name="nama_kriteria" id="nama_kriteria" value="{{ old('nama_kriteria') }}" 
+                                class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" required>
+                            @error('nama_kriteria')
+                                <span class="text-sm text-red-600">{{ $message }}</span>
+                            @enderror
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="sifat" class="block text-sm font-medium text-gray-700">Sifat</label>
+                            <select name="sifat" id="sifat" class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" required>
+                                <option value="cost" {{ old('sifat') == 'cost' ? 'selected' : '' }}>Cost</option>
+                                <option value="benefit" {{ old('sifat') == 'benefit' ? 'selected' : '' }}>Benefit</option>
+                            </select>
+                            @error('sifat')
+                                <span class="text-sm text-red-600">{{ $message }}</span>
+                            @enderror
+                        </div>
+
+                        <div class="mb-6">
+                            <label for="bobot" class="block text-sm font-medium text-gray-700">Bobot (0 – 1)</label>
+                            <input type="number" name="bobot" id="bobot" value="{{ old('bobot') }}" 
+                                step="0.01" min="0" max="1" 
+                                class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" required>
+                            <p class="text-xs text-gray-500 mt-1">Gunakan titik (.) untuk desimal, contoh: 0.25</p>
+                            @error('bobot')
+                                <span class="text-sm text-red-600">{{ $message }}</span>
+                            @enderror
+                        </div>
+
+                        <div class="flex items-center gap-4">
+                            <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition">
+                                Simpan Kriteria
+                            </button>
+                            <a href="{{ route('kriteria.index') }}" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition">
+                                Batal
+                            </a>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
         </div>
-
-        <div class="mb-3">
-            <label>Nama Kriteria</label>
-            <input type="text" name="nama_kriteria" class="form-control"
-                   value="{{ old('nama_kriteria') }}" required>
-            @error('nama_kriteria')
-                <small class="text-danger">{{ $message }}</small>
-            @enderror
-        </div>
-
-        <div class="mb-3">
-            <label>Sifat</label>
-            <select name="sifat" class="form-control" required>
-                <option value="cost" {{ old('sifat') == 'cost' ? 'selected' : '' }}>Cost</option>
-                <option value="benefit" {{ old('sifat') == 'benefit' ? 'selected' : '' }}>Benefit</option>
-            </select>
-            @error('sifat')
-                <small class="text-danger">{{ $message }}</small>
-            @enderror
-        </div>
-
-        <div class="mb-3">
-            <label>Bobot (0 – 1)</label>
-            <input type="number" name="bobot" class="form-control"
-                   step="0.01" min="0" max="1" value="{{ old('bobot') }}" required>
-            @error('bobot')
-                <small class="text-danger">{{ $message }}</small>
-            @enderror
-        </div>
-
-        <button type="submit" class="btn btn-success">Simpan</button>
-        <a href="{{ route('kriteria.index') }}" class="btn btn-secondary">Batal</a>
-    </form>
-</div>
-@endsection
+    </div>
+</x-app-layout>
