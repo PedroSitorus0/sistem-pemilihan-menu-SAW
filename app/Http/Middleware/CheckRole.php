@@ -4,28 +4,31 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Auth;
+use Symfony\Component\HttpFoundation\Response;
 
-class CheckRole
+
+class CheckRole 
 {
     /**
      * Handle an incoming request.
      *
-     * @param  Closure(Request): (Response)  $next
+     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-    public function handle(Request $request, Closure $next, $roles): Response
+    public function handle(Request $request, Closure $next): Response
     {
-       if(!Auth::check()) {
-        return redirect()->route('login');
-       }
-       
-       $userRole = Auth::user()->role;
+        // Pastikan user sudah login
+        if (!Auth::check()) {
+            return redirect()->route('login');
+        }
 
-       if (!in_array($userRole, $roles)) {
-        abort(403, 'Anda Tidak Memiliki Akses ke Halaman Ini');
-       }
+        $userRole = Auth::user()->role;
 
-       return $next($request);
+        // Jika role BUKAN 'admin' DAN BUKAN 'dev', maka tampilkan 403
+        if ($userRole !== 'admin' && $userRole !== 'dev') {
+            abort(403, 'Akses Ditolak: Hanya Admin dan Developer yang diizinkan untuk mengelola menu aplikasi.');
+        }
+
+        return $next($request);
     }
 }
