@@ -67,4 +67,45 @@ class UserController extends Controller
         $user->delete();
         return redirect()->route('users.index')->with('success', 'Pengguna berhasil dihapus.');
     }
+    public function verifyNim(Request $request, User $user)
+{
+    $currentUserRole = auth()->user()->role;
+ 
+    // Guard di level controller - jangan hanya andalkan tombol yang disembunyikan di UI
+    if (! in_array($currentUserRole, ['admin', 'dev'])) {
+        abort(403, 'Anda tidak memiliki izin untuk memverifikasi NIM.');
+    }
+ 
+    if (! $user->nomor_induk) {
+        return redirect()->route('users.index')
+            ->with('error', 'User ini belum mengisi NIM, tidak ada yang bisa diverifikasi.');
+    }
+ 
+    $user->nomor_induk_verified_at = now();
+    $user->save();
+ 
+    return redirect()->route('users.index')
+        ->with('success', "NIM milik {$user->nama} berhasil diverifikasi.");
+}
+ 
+/**
+ * Tolak/reset verifikasi NIM - mengosongkan NIM supaya user mengisi ulang
+ * (misal karena NIM yang diinput salah/tidak valid).
+ */
+public function rejectNim(Request $request, User $user)
+{
+    $currentUserRole = auth()->user()->role;
+ 
+    if (! in_array($currentUserRole, ['admin', 'dev'])) {
+        abort(403, 'Anda tidak memiliki izin untuk menolak NIM.');
+    }
+ 
+    $user->nomor_induk = null;
+    $user->nomor_induk_verified_at = null;
+    $user->save();
+ 
+    return redirect()->route('users.index')
+        ->with('success', "NIM milik {$user->nama} ditolak dan diminta mengisi ulang.");
+}
+
 }
