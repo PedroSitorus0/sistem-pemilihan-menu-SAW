@@ -241,13 +241,13 @@
                             <label class="form-label">Nama Lengkap</label>
                             <input 
                                 type="text" 
-                                name="name" 
-                                class="form-input @error('name') border-red-500 @enderror"
-                                value="{{ old('name', $user->name) }}"
+                                name="nama" 
+                                class="form-input @error('nama') border-red-500 @enderror"
+                                value="{{ old('nama', $user->nama) }}"
                                 placeholder="Masukkan nama lengkap pengguna"
                                 required
                             >
-                            @error('name')
+                            @error('nama')
                                 <span class="form-error">{{ $message }}</span>
                             @enderror
                         </div>
@@ -275,9 +275,9 @@
                                 required
                             >
                                 <option value="">-- Pilih Role --</option>
-                                <option value="dev" {{ old('role', $user->role) === 'dev' ? 'selected' : '' }}>Developer</option>
                                 <option value="admin" {{ old('role', $user->role) === 'admin' ? 'selected' : '' }}>Admin</option>
-                                <option value="user" {{ old('role', $user->role) === 'user' ? 'selected' : '' }}>User</option>
+                                <option value="mahasiswa" {{ old('role', $user->role) === 'mahasiswa' ? 'selected' : '' }}>Mahasiswa</option>
+                                <option value="dev" {{ old('role', $user->role) === 'dev' ? 'selected' : '' }}>Developer</option>
                             </select>
                             @error('role')
                                 <span class="form-error">{{ $message }}</span>

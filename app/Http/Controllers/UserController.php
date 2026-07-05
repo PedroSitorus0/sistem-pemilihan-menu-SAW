@@ -46,12 +46,12 @@ class UserController extends Controller
         $this->checkPermission($user);
 
         $request->validate([
-            'name' => 'required|string|max:255',
+            'nama' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
-            'role' => 'required|in:dev,admin,user',
+            'role' => 'required|in:admin,mahasiswa,dev',
         ]);
 
-        $user->name = $request->name;
+        $user->nama = $request->nama;
         $user->email = $request->email;
         $user->role = $request->role;
         $user->save();
