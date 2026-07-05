@@ -23,10 +23,22 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::middleware('auth')->group(function () {
+
+Route::middleware(['auth', 'verified'])->group(function() {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::post('/users/{user}/verify-nim', [App\Http\Controllers\UserController::class, 'verifyNim'])
+        ->name('users.verifyNim');
+    Route::post('/users/{user}/reject-nim', [App\Http\Controllers\UserController::class, 'rejectNim'])
+        ->name('users.rejectNim');
+
+});
+
+Route::middleware('auth')->group(function () {
+    // Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    // Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    // Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::resource('kriteria', KriteriaController::class);
     Route::resource('user', UserController::class);
     Route::resource('/penilaian', PenilaianController::class);

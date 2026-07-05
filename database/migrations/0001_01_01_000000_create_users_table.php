@@ -18,6 +18,8 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('phone', 30)->unique()->nullable();
             $table->string('nomor_induk', 50)->unique()->nullable();
+            $table->string('foto')->nullable();
+            $table->timestamp('nomor_induk_verified_at')->nullable();
             $table->string('password');
             $table->enum('role',['admin', 'mahasiswa', 'dev'])->default('mahasiswa');
             $table->rememberToken();
@@ -48,5 +50,9 @@ return new class extends Migration
         Schema::dropIfExists('users');
         Schema::dropIfExists('password_reset_tokens');
         Schema::dropIfExists('sessions');
+
+        Schema::table('users', function(Blueprint $table) {
+        $table->dropColumn(['foto', 'nomor_induk_verified_at']);
+        });
     }
 };
