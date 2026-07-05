@@ -65,30 +65,6 @@ class ProfileController extends Controller
         // ===== UPLOAD FOTO SAMPUL (hasil crop, dikirim sebagai base64) =====
         if ($request->filled('cover_photo_cropped')) {
             $this->saveCroppedImage($request->input('cover_photo_cropped'), $user, 'cover_photo', 'cover-photos');
-
-        if ($user->isDirty('email')) {
-            $user->email_verified_at = null;
-        }
-
-        // ===== LOGIKA VERIFIKASI NIM =====
-        // Jika NIM berubah (baik dari kosong -> isi, atau isi -> isi lain),
-        // status verifikasi otomatis di-reset ke NULL (belum diverifikasi),
-        // supaya admin/dev wajib mengecek ulang nilai yang baru.
-        $nomorIndukBaru = $validated['nomor_induk'] ?? null;
-        if ($nomorIndukBaru !== $user->nomor_induk) {
-            $user->nomor_induk = $nomorIndukBaru;
-            $user->nomor_induk_verified_at = null;
-        }
-
-        // ===== UPLOAD FOTO PROFIL =====
-        if ($request->hasFile('foto')) {
-            // Hapus foto lama supaya tidak menumpuk file yatim di storage
-            if ($user->foto) {
-                Storage::disk('public')->delete($user->foto);
-            }
-
-            $path = $request->file('foto')->store('profile-photos', 'public');
-            $user->foto = $path;
         }
 
         $user->save();
