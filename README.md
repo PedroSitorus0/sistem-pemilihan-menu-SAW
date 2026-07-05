@@ -123,12 +123,12 @@ Aplikasi berbasis web untuk membantu pemilihan menu terbaik di kantin menggunaka
 - [x] View hasil – Menampilkan tabel peringkat menu
 
 ### Fase 5 - Logging dan Tools
-- [ ] **Middleware Logger** – Mencatat setiap request (method, URL, IP, user agent) ke tabel system_logs; dapat diaktifkan untuk route tertentu
-- [ ] **DevController** – Halaman Developer Tools (informasi environment, log level, dsb.)
+- [x] Middleware Logger – Mencatat setiap request (method, URL, IP, user agent) ke tabel system_logs; dapat diaktifkan untuk route tertentu
+- [x] DevController – Halaman Developer Tools (informasi environment, log level, dsb.)
 
 ### Fase 6 - Testing dan Penyempurnaan
-- [ ] Uji setiap role, pastikan constraint unique berfungsi
-- [ ] Perbaikan UI/UX, notifikasi, validasi form
+- [x] Uji setiap role, pastikan constraint unique berfungsi
+- [x] Perbaikan UI/UX, notifikasi, validasi form
 - [ ] Dokumentasi penggunaan
 
 ## Catatan Penting
