@@ -358,8 +358,9 @@
         }
     </style>
 
+    <x-app-layout>
     <div class="py-8 sm:py-12">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8">
 
             <div class="mb-6 sm:mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
@@ -381,7 +382,7 @@
             @endif
 
             <div class="table-container">
-                <div class="table-overflow">
+                <div class="table-overflow w-full overflow-x-auto">
                     <table class="w-full text-sm text-left text-[#18120F]" id="table">
                         <thead>
                             <tr>
@@ -443,7 +444,12 @@
                                                 @if($user->nomor_induk_verified_at)
                                                     <span class="verify-badge verified w-fit">✓ Terverifikasi</span>
                                                 @else
-                                                    <span class="verify-badge pending w-fit">⏳ Menunggu</span>
+                                                    <span class="verify-badge pending w-fit">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-hourglass-bottom inline-block mr-1" viewBox="0 0 16 16">
+                                                            <path d="M2 1.5a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-1v1a4.5 4.5 0 0 1-2.557 4.06c-.29.139-.443.377-.443.59v.7c0 .213.154.451.443.59A4.5 4.5 0 0 1 12.5 13v1h1a.5.5 0 0 1 0 1h-11a.5.5 0 1 1 0-1h1v-1a4.5 4.5 0 0 1 2.557-4.06c.29-.139.443-.377.443-.59v-.7c0-.213-.154-.451-.443-.59A4.5 4.5 0 0 1 3.5 3V2h-1a.5.5 0 0 1-.5-.5m2.5.5v1a3.5 3.5 0 0 0 1.989 3.158c.533.256 1.011.791 1.011 1.491v.702s.18.149.5.149.5-.15.5-.15v-.7c0-.701.478-1.236 1.011-1.492A3.5 3.5 0 0 0 11.5 3V2z"/>
+                                                        </svg> 
+                                                        Menunggu
+                                                    </span>
                                                 @endif
                                             </div>
                                         @else
@@ -452,7 +458,6 @@
                                     </td>
                                     <td class="text-center">
                                         <div class="flex justify-center items-center gap-1.5 flex-wrap">
-                                            {{-- Tombol verifikasi NIM: hanya muncul jika NIM sudah diisi & belum diverifikasi --}}
                                             @if($canVerifyNim && $user->nomor_induk && !$user->nomor_induk_verified_at)
                                                 <form action="{{ route('users.verifyNim', $user->id) }}" method="POST" style="display:inline;">
                                                     @csrf
@@ -489,7 +494,7 @@
                 </div>
             </div>
 
-            <div class="pagination-container">
+            <div class="pagination-container mt-4">
                 {{ $users->links() }}
             </div>
 
