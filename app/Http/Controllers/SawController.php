@@ -24,9 +24,10 @@ class SawController extends Controller
         
         $hasil = $data['hasil'];
         $kriteria = $data['kriteria']; // <-- Tambahkan baris ini untuk mengambil kriteria
+        $kategoriList = \App\Models\Menu::select('kategori')->distinct()->pluck('kategori');
 
         // Kirim 'hasil' dan 'kriteria' ke view
-        return view('saw.hasil', compact('hasil', 'kriteria')); 
+        return view('saw.hasil', compact('hasil', 'kriteria', 'kategoriList')); 
     }
 
     private function hitungSaw()
