@@ -19,6 +19,9 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/2.0.8/css/dataTables.tailwindcss.css">
 </head>
 <body class="font-sans antialiased">
+    <main class="pt-20">
+        {{ $slot }} 
+    </main>
     <div class="min-h-screen bg-gray-100">
         @include('layouts.navigation')
         
