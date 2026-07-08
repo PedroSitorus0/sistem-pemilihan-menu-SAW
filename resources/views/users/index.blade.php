@@ -358,7 +358,7 @@
         }
     </style>
 
-    <x-app-layout>
+
     <div class="py-8 sm:py-12">
         <div class="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8">
 
@@ -412,7 +412,7 @@
                                         <div class="flex items-center gap-3 min-w-[180px]">
                                             @if($user->foto)
                                                 <img src="{{ asset('storage/' . $user->foto) }}" alt="{{ $user->nama }}" class="user-avatar-img">
-                                            @else
+                                            @elseif($user->nama)
                                                 <div class="user-avatar-fallback">
                                                     {{ strtoupper(substr($user->nama, 0, 1)) }}
                                                 </div>
@@ -488,6 +488,7 @@
                                         </div>
                                     </td>
                                 </tr>
+                                
                             @endforeach
                         </tbody>
                     </table>
@@ -500,4 +501,5 @@
 
         </div>
     </div>
+
 </x-app-layout>

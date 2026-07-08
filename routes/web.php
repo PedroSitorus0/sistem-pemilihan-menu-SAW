@@ -43,6 +43,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('user', UserController::class);
     Route::resource('/penilaian', PenilaianController::class);
     Route::get('/rekomendasi-menu',[SawController::class, 'hasil'])->name('saw.hasil');
+    Route::get('/prototype', [SawController::class, 'hasil'])->name('');
 
     Route::middleware(['role:admin,dev'])->group(function() {
         Route::resource('menus', MenuController::class);
