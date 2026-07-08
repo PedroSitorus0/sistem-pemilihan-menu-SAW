@@ -148,6 +148,34 @@
 				    <p class="mt-3 text-[#948E86] text-sm max-w-sm">Diurutkan berdasarkan skor SPK dari kombinasi kriteria yang Anda tetapkan.</p>
 				</div>
 
+				<div class="w-full sm:w-72">
+        <label class="font-mono block mb-3 text-[11px] uppercase tracking-[0.15em] text-[#948E86]">
+            Kategori
+        </label>
+        <div class="dropdown-container">
+            <button type="button" class="dropdown-toggle" data-target="filterKategori-menu" aria-haspopup="listbox" aria-expanded="false">
+                <span id="filterKategoriLabel">Semua Menu</span>
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                </svg>
+            </button>
+
+            <select id="filterKategori" name="filterKategori" class="sr-only">
+                <option value="all">Semua Menu</option>
+                @foreach($kategoriList as $kat)
+                    <option value="{{($kat) }}">{{ $kat }}</option>
+                @endforeach
+            </select>
+
+            <div class="dropdown-menu" id="filterKategori-menu" role="listbox">
+                <option-item value="all" class="selected">Semua Menu</option-item>
+                @foreach($kategoriList as $kat)
+                    <option-item value="{{($kat) }}">{{ $kat }}</option-item>
+                @endforeach
+            </div>
+        </div>
+    </div>
+
 				<div class="w-full lg:w-72">
 				    <label class="font-mono block mb-3 text-[11px] uppercase tracking-[0.15em] text-[#948E86]">
 				        Urutkan berdasarkan
@@ -197,6 +225,18 @@
 				    $circumference = 2 * pi() * 26;
 				@endphp
 
+				@if(empty($hasil))
+    <div class="col-span-full flex flex-col items-center justify-center py-20 px-4 text-center bg-white rounded-2xl border border-dashed border-[#DFDAD1]">
+        <div class="w-16 h-16 mb-4 rounded-full bg-[#FEF7F3] flex items-center justify-center text-[#E63912]">
+            <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+            </svg>
+        </div>
+        <h3 class="font-display text-xl font-semibold text-[#18120F]">Belum Ada Rekomendasi</h3>
+        <p class="text-[#948E86] mt-2 max-w-sm">Data menu atau penilaian masih kosong. Silakan tambahkan menu dan kriteria terlebih dahulu untuk melihat hasil SPK.</p>
+    </div>
+@endif 
+
 				@foreach($hasil as $item)
 				    @php
 				        $persen = $skorMax > 0 ? min(100, ($item['skor'] / $skorMax) * 100) : 0;
@@ -205,6 +245,7 @@
 				    <div class="menu-card group flex flex-col bg-white rounded-2xl overflow-hidden transition-all duration-300 shadow-[0_1px_2px_rgba(24,18,15,0.06)] border border-[#EAE6DF] hover:shadow-[0_20px_32px_-16px_rgba(24,18,15,0.18)] hover:border-[#DFDAD1] hover:-translate-y-1"
 				         data-skor="{{ $item['skor'] }}"
 						 data-harga = {{$item['menu']->harga}}
+						 data-kategori = {{$item['menu']->kategori}}
 				         @foreach($item['kriteria_scores'] as $idKriteria => $nilai)
 				             data-kriteria-{{ $idKriteria }}="{{ $nilai }}"
 				         @endforeach
@@ -237,7 +278,9 @@
 				            <div class="mt-6 flex justify-between items-center">
 				                <div>
 				                    <p class="font-mono text-[10px] uppercase tracking-wider text-[#948E86] mb-1">Harga</p>
-				                    <p class="font-mono text-sm font-semibold text-[#18120F]">Rp {{ number_format($item['menu']->harga, 0, ',', '.') }}</p>
+				                    <p class="font-mono text-sm font-semibold text-[#18120F]">Rp {{ number_format($item['menu']->harga, 0, ',', '.') }}</p><br>
+									<p class="font-mono text-[10px] uppercase tracking-wider text-[#948E86] mb-1">Kategori</p>
+									<p class="font-mono text-sm font-semibold text-black"> {{ $item['menu']->kategori }}</p>
 				                </div>
 
 				                <div class="relative w-16 h-16 shrink-0">
@@ -484,6 +527,177 @@
 			    let initialCards = Array.from(container.getElementsByClassName('menu-card'));
 			    updateCardStyles(initialCards);
 			});
+
+			document.addEventListener('DOMContentLoaded', function() {
+    
+    // 1. Inisialisasi Semua Dropdown Kustom
+    const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
+    
+    dropdownToggles.forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const targetId = this.getAttribute('data-target');
+            const menu = document.getElementById(targetId);
+            const isOpen = menu.classList.contains('show');
+            
+            // Tutup semua dropdown lain dulu
+            document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('show'));
+            document.querySelectorAll('.dropdown-toggle').forEach(b => {
+                b.classList.remove('active');
+                b.setAttribute('aria-expanded', 'false');
+            });
+
+            if (!isOpen) {
+                menu.classList.add('show');
+                this.classList.add('active');
+                this.setAttribute('aria-expanded', 'true');
+            }
+        });
+    });
+
+    // 2. Handle Klik Opsi Dropdown
+    document.querySelectorAll('.dropdown-menu option-item').forEach(item => {
+        item.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const menu = this.closest('.dropdown-menu');
+            const container = this.closest('.dropdown-container');
+            const btn = container.querySelector('.dropdown-toggle');
+            const select = container.querySelector('select');
+            const label = btn.querySelector('span');
+            
+            // Update visual item terpilih
+            menu.querySelectorAll('option-item').forEach(opt => opt.classList.remove('selected'));
+            this.classList.add('selected');
+            
+            // Update tombol & select tersembunyi
+            label.textContent = this.textContent.trim();
+            select.value = this.getAttribute('value');
+            
+            // Tutup menu
+            menu.classList.remove('show');
+            btn.classList.remove('active');
+            btn.setAttribute('aria-expanded', 'false');
+            
+            // Picu event change
+            select.dispatchEvent(new Event('change'));
+        });
+    });
+
+    // Tutup dropdown jika klik di luar
+    document.addEventListener('click', function() {
+        document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('show'));
+        document.querySelectorAll('.dropdown-toggle').forEach(b => {
+            b.classList.remove('active');
+            b.setAttribute('aria-expanded', 'false');
+        });
+    });
+
+    // 3. LOGIKA FILTER & SORTING
+    const container = document.getElementById('menuContainer');
+    const selectSort = document.getElementById('sortMenu');
+    const selectFilter = document.getElementById('filterKategori');
+    let allCards = Array.from(container.getElementsByClassName('menu-card'));
+
+    function updateCardStyles(visibleCards) {
+        visibleCards.forEach((card, index) => {
+            // Update Nomor Peringkat (Hanya untuk yang tampil)
+            const rankNumber = card.querySelector('.card-rank-number');
+            if (rankNumber) {
+                rankNumber.textContent = String(index + 1).padStart(2, '0');
+            }
+
+            const isTop = index === 0;
+            
+            // Styling Highlight untuk Juara 1
+            if (isTop) {
+                card.classList.remove('shadow-[0_1px_2px_rgba(24,18,15,0.06)]', 'border-[#EAE6DF]');
+                card.classList.add('shadow-[0_0_0_1.5px_#E63912,0_16px_32px_-12px_rgba(230,57,18,0.25)]');
+            } else {
+                card.classList.remove('shadow-[0_0_0_1.5px_#E63912,0_16px_32px_-12px_rgba(230,57,18,0.25)]');
+                card.classList.add('shadow-[0_1px_2px_rgba(24,18,15,0.06)]', 'border-[#EAE6DF]');
+            }
+
+            const topBadge = card.querySelector('.top-badge');
+            if (topBadge) isTop ? topBadge.classList.remove('hidden') : topBadge.classList.add('hidden');
+
+            const gaugeRing = card.querySelector('.gauge-ring');
+            if (gaugeRing) gaugeRing.setAttribute('stroke', isTop ? '#E63912' : '#18120F');
+        });
+    }
+
+    function applyFiltersAndSort() {
+        const sortValue = selectSort.value;
+        const filterValue = selectFilter.value;
+        const activeSortLabel = document.getElementById('sortMenuLabel').textContent.toLowerCase();
+        
+        let visibleCards = [];
+
+        // TAHAP 1: FILTERING
+        allCards.forEach(card => {
+            if (filterValue === 'all' || card.dataset.kategori === filterValue) {
+                card.style.display = 'flex'; // Munculkan
+                visibleCards.push(card);
+            } else {
+                card.style.display = 'none'; // Sembunyikan
+            }
+        });
+
+        // TAHAP 2: SORTING (Hanya pada kartu yang lolos filter)
+        visibleCards.sort(function(a, b) {
+            if (sortValue === 'spk_desc') {
+                return (parseFloat(b.dataset.skor) || 0) - (parseFloat(a.dataset.skor) || 0);
+            } 
+            else if (sortValue.startsWith('kriteria_')) {
+                let parts = sortValue.split('_');
+                let kriteriaId = parts[1];
+                let sifat = parts[2];
+
+                // Cek khusus untuk "Harga" agar mengurutkan nominal asli Rp
+                if (activeSortLabel.includes('harga') || activeSortLabel.includes('termurah')) {
+                    let hargaA = parseFloat(a.dataset.harga) || 0;
+                    let hargaB = parseFloat(b.dataset.harga) || 0;
+                    return sifat === 'cost' ? (hargaA - hargaB) : (hargaB - hargaA);
+                }
+
+                let nilaiA = parseFloat(a.getAttribute('data-kriteria-' + kriteriaId)) || 0;
+                let nilaiB = parseFloat(b.getAttribute('data-kriteria-' + kriteriaId)) || 0;
+
+                // Tie-breaker menggunakan skor SPK
+                if (nilaiA === nilaiB) {
+                    return (parseFloat(b.dataset.skor) || 0) - (parseFloat(a.dataset.skor) || 0);
+                }
+
+                return sifat === 'cost' ? (nilaiA - nilaiB) : (nilaiB - nilaiA);
+            }
+            return 0;
+        });
+
+        // TAHAP 3: RENDERING ANIMASI DOM
+        container.style.opacity = '0.3';
+        container.style.transform = 'translateY(12px)';
+
+        setTimeout(() => {
+            // Susun ulang yang terlihat di DOM
+            visibleCards.forEach(card => container.appendChild(card));
+            // Biarkan yang tersembunyi berada di akhir DOM agar tidak hilang
+            allCards.filter(c => !visibleCards.includes(c)).forEach(c => container.appendChild(c));
+            
+            // Hitung ulang peringkat (01, 02) hanya untuk yang tampil
+            updateCardStyles(visibleCards);
+
+            container.style.opacity = '1';
+            container.style.transform = 'translateY(0)';
+        }, 150);
+    }
+
+    // Pasang Event Listener untuk kedua select tersembunyi
+    selectSort.addEventListener('change', applyFiltersAndSort);
+    selectFilter.addEventListener('change', applyFiltersAndSort);
+
+    // Initial load
+    container.style.transition = 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)';
+    applyFiltersAndSort();
+});
 		    </script>
 
 			

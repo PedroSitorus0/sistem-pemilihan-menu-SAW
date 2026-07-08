@@ -12,8 +12,15 @@ class SawController extends Controller
 {
     public function index()
     {
+        
         // Panggil fungsi perhitungan, ambil semua data mentah dan hasil
         $data = $this->hitungSaw();
+
+        if(empty($data)) {
+            return[
+                'data' => $data,
+            ];
+        }
         return view('saw.index', $data);
     }
 
@@ -25,14 +32,26 @@ class SawController extends Controller
         $hasil = $data['hasil'];
         $kriteria = $data['kriteria']; // <-- Tambahkan baris ini untuk mengambil kriteria
 
+        
+        $kategoriList = \App\Models\Menu::select('kategori')->distinct()->pluck('kategori');
+
         // Kirim 'hasil' dan 'kriteria' ke view
-        return view('saw.hasil', compact('hasil', 'kriteria')); 
+        return view('saw.hasil', compact('hasil', 'kriteria', 'kategoriList')); 
     }
 
     private function hitungSaw()
     {
         $kriteria = Kriteria::all();
         $menus = Menu::all();
+        
+        if($kriteria->isEmpty() || $menus->isEmpty()) {
+            return[
+                'hasil' => [],
+                'kriteria' => $kriteria,
+                'menus' => $menus,
+            ];
+        }
+
         
         // 1. Ambil rata-rata penilaian
         $rataRata = Penilaian::select('menu_id', 'kriteria_id', DB::raw('AVG(nilai) as rata'))
@@ -64,10 +83,14 @@ class SawController extends Controller
             $totalSkor = 0;
             $kriteria_scores = []; // <-- TAMBAHKAN INI
 
+            
             foreach ($kriteria as $k) {
                 $nilaiAsli = $matriks[$menu->id][$k->id] ?? 0;
                 $kriteria_scores[$k->id] = $nilaiAsli; // <-- SIMPAN DATA ASLI UNTUK SORTING
                 
+                if(empty($matriks[$k->id])) {
+                    continue;
+                }
                 // Hitung Normalisasi
                 $norm = ($k->sifat === 'benefit') 
                         ? ($nilaiAsli / $maxMin[$k->id]) 
