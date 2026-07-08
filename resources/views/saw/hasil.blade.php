@@ -225,6 +225,18 @@
 				    $circumference = 2 * pi() * 26;
 				@endphp
 
+				@if(empty($hasil))
+    <div class="col-span-full flex flex-col items-center justify-center py-20 px-4 text-center bg-white rounded-2xl border border-dashed border-[#DFDAD1]">
+        <div class="w-16 h-16 mb-4 rounded-full bg-[#FEF7F3] flex items-center justify-center text-[#E63912]">
+            <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+            </svg>
+        </div>
+        <h3 class="font-display text-xl font-semibold text-[#18120F]">Belum Ada Rekomendasi</h3>
+        <p class="text-[#948E86] mt-2 max-w-sm">Data menu atau penilaian masih kosong. Silakan tambahkan menu dan kriteria terlebih dahulu untuk melihat hasil SPK.</p>
+    </div>
+@endif 
+
 				@foreach($hasil as $item)
 				    @php
 				        $persen = $skorMax > 0 ? min(100, ($item['skor'] / $skorMax) * 100) : 0;
