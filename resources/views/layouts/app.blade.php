@@ -19,10 +19,8 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/2.0.8/css/dataTables.tailwindcss.css">
 </head>
 <body class="font-sans antialiased">
-    <main class="pt-20">
-        {{ $slot }} 
-    </main>
-    <div class="min-h-screen bg-gray-100">
+    
+    <div class="min-h-screen bg-gray-100 pt-16">
         @include('layouts.navigation')
         
         <script defer src="{{ asset('js/app.js') }}"></script>
@@ -36,7 +34,7 @@
             @endisset
 
             <!-- Page Content -->
-            <main>
+            <main class="pb-12 mt-4">
                 {{ $slot }}
             </main>
         </div>

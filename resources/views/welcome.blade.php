@@ -43,7 +43,7 @@
             <div class="aspect-video bg-white rounded-2xl shadow-2xl shadow-slate-200/60 border-4 border-white p-2 transform rotate-2 hover:rotate-0 transition-transform duration-500">
                 
                 <div class="w-full h-full bg-slate-100 rounded-xl overflow-hidden group">
-                    <img src="{{ asset('test.png') }}" alt="Ilustrasi Kantin STMIK Mardira" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+                    <img src="{{ asset('kantin.png') }}" alt="Ilustrasi Kantin STMIK Mardira" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
                 </div>
 
             </div>
