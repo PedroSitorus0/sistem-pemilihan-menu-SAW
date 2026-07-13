@@ -22,19 +22,19 @@ class KriteriaSeeder extends Seeder
             ],
             [
                 'kode_kriteria' => 'C2',
-                'nama_kriteria' => 'Kualitas',
+                'nama_kriteria' => 'Popularitas',
                 'sifat'         => 'benefit',
                 'bobot'         => 0.25,
             ],
             [
                 'kode_kriteria' => 'C3',
-                'nama_kriteria' => 'Jarak',
+                'nama_kriteria' => 'Ketersediaan',
                 'sifat'         => 'cost',
                 'bobot'         => 0.20,
             ],
             [
                  'kode_kriteria' => 'C4',
-                'nama_kriteria' => 'Fasilitas',
+                'nama_kriteria' => 'Tingkat Rasa',
                 'sifat'         => 'benefit',
                 'bobot'         => 0.25,
             ],
