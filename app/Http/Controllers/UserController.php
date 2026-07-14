@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
@@ -20,17 +21,38 @@ class UserController extends Controller
      */
     private function checkPermission(User $targetUser)
     {
-        $currentUser = auth()->user();
+        // $currentUser = auth()->user();
 
         // 1. Dev tidak bisa mengedit sesama Dev
-        if ($currentUser->role === 'dev' && $targetUser->role === 'dev') {
-            abort(403, 'Akses Ditolak: Anda tidak dapat mengubah data sesama Developer.');
-        }
+        // if ($currentUser->role === 'dev' && $targetUser->role === 'dev') {
+        //     abort(403, 'Akses Ditolak: Anda tidak dapat mengubah data sesama Developer.');
+        // } 
+        
+        // if (Auth::user()->role === 'dev' && $targetUser->id === Auth::user()->id) {
+            
+        // } 
 
-        // 2. Admin hanya bisa mengedit User (tidak bisa Dev atau sesama Admin)
-        if ($currentUser->role === 'admin' && in_array($targetUser->role, ['dev', 'admin'])) {
-            abort(403, 'Akses Ditolak: Admin hanya memiliki wewenang untuk mengubah data User.');
-        }
+        // // 2. Admin hanya bisa mengedit User (tidak bisa Dev atau sesama Admin)
+        // if ($currentUser->role === 'admin' && in_array($targetUser->role, ['dev', 'admin'])) {
+        //     abort(403, 'Akses Ditolak: Admin hanya memiliki wewenang untuk mengubah data User.');
+        // }
+
+        $currentUser = Auth::user();
+
+    // 1. ATURAN DEVELOPER: Tidak boleh mengedit Developer LALN
+    if ($currentUser->role === 'dev' && $targetUser->role === 'dev' && $currentUser->id !== $targetUser->id) {
+        abort(403, 'Akses Ditolak: Anda tidak dapat mengubah data sesama Developer.');
+    }
+
+    // 2. ATURAN ADMIN (A): Tidak boleh mengedit Developer (Hierarki di atasnya)
+    if ($currentUser->role === 'admin' && $targetUser->role === 'dev') {
+        abort(403, 'Akses Ditolak: Admin tidak memiliki hak untuk mengubah data Developer.');
+    }
+
+    // 3. ATURAN ADMIN (B): Tidak boleh mengedit Admin LAIN
+    if ($currentUser->role === 'admin' && $targetUser->role === 'admin' && $currentUser->id !== $targetUser->id) {
+        abort(403, 'Akses Ditolak: Anda tidak dapat mengubah data sesama Admin.');
+    }
     }
 
     public function edit(User $user)

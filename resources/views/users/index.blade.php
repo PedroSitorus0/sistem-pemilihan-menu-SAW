@@ -396,15 +396,23 @@
                             @foreach($users as $user)
                                 @php
                                     $canEdit = false;
-                                    $currentUserRole = auth()->user()->role;
+                                    $currentUser = auth()->user();
 
-                                    if ($currentUserRole === 'dev' && $user->role !== 'dev') {
+                                    // 1. ATURAN UMUM: Semua orang boleh mengedit akunnya sendiri
+                                    if ($currentUser->id === $user->id) {
                                         $canEdit = true;
-                                    } elseif ($currentUserRole === 'admin' && $user->role === 'user') {
+                                    } 
+                                    // 2. ATURAN DEV: Boleh mengedit siapa saja, KECUALI sesama Dev
+                                    elseif ($currentUser->role === 'dev' && $user->role !== 'dev') {
+                                        $canEdit = true;
+                                    } 
+                                    // 3. ATURAN ADMIN: Hanya boleh mengedit selain Admin dan Dev (yaitu mahasiswa)
+                                    elseif ($currentUser->role === 'admin' && !in_array($user->role, ['admin', 'dev'])) {
                                         $canEdit = true;
                                     }
 
-                                    $canVerifyNim = in_array($currentUserRole, ['admin', 'dev']);
+                                    // Logika verifikasi NIM tetap dipertahankan
+                                    $canVerifyNim = in_array($currentUser->role, ['admin', 'dev']);
                                 @endphp
 
                                 <tr>
