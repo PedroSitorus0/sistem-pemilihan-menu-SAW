@@ -16,7 +16,7 @@ class MenuSeeder extends Seeder
         $data = [
             [
                 'nama_menu'    => 'Nasi Goreng Spesial',
-                'kategori'     => 'Makanan Berat',
+                'kategori'     => 'Makanan',
                 'harga'        => 11000,
                 'deskripsi'    => 'Nasi goreng dengan telur ceplok, disajikan dengan taburan bawang goreng.',
                 'ketersediaan' => 'tersedia',
@@ -24,7 +24,7 @@ class MenuSeeder extends Seeder
             ],
             [
                 'nama_menu'    => 'Ayam Bakar',
-                'kategori'     => 'Makanan Berat',
+                'kategori'     => 'Makanan',
                 'harga'        => 14000,
                 'deskripsi'    => 'Ayam bakar bumbu kecap, disajikan dengan sambal dan lalapan.',
                 'ketersediaan' => 'tersedia',
@@ -32,7 +32,7 @@ class MenuSeeder extends Seeder
             ],
             [
                 'nama_menu'    => 'Ayam Teriyaki',
-                'kategori'     => 'Makanan Berat',
+                'kategori'     => 'Makanan',
                 'harga'        => 14000,
                 'deskripsi'    => 'Ayam fillet saus teriyaki manis gurih.',
                 'ketersediaan' => 'tersedia',
@@ -40,7 +40,7 @@ class MenuSeeder extends Seeder
             ],
             [
                 'nama_menu'    => 'Chicken Katsu',
-                'kategori'     => 'Makanan Berat',
+                'kategori'     => 'Makanan',
                 'harga'        => 14000,
                 'deskripsi'    => 'Ayam crispy dengan saus katsu khas.',
                 'ketersediaan' => 'tanpa keterangan',
@@ -48,7 +48,7 @@ class MenuSeeder extends Seeder
             ],
             [
                 'nama_menu'    => 'Pisang Coklat',
-                'kategori'     => 'Snack',
+                'kategori'     => 'Cemilan',
                 'harga'        => 5000,
                 'deskripsi'    => 'Pisang goreng crispy isi coklat leleh.',
                 'ketersediaan' => 'tersedia',
@@ -56,7 +56,7 @@ class MenuSeeder extends Seeder
             ],
             [
                 'nama_menu'    => 'Cheese Roll',
-                'kategori'     => 'Snack',
+                'kategori'     => 'Cemilan',
                 'harga'        => 5000,
                 'deskripsi'    => 'Kulit lumpia crispy isi keju leleh.',
                 'ketersediaan' => 'tersedia',
@@ -64,7 +64,7 @@ class MenuSeeder extends Seeder
             ],
             [
                 'nama_menu'    => 'Risoles',
-                'kategori'     => 'Snack',
+                'kategori'     => 'Cemilan',
                 'harga'        => 5000,
                 'deskripsi'    => 'Risoles isi sayur dan ragout, digoreng crispy.',
                 'ketersediaan' => 'tidak tersedia',
