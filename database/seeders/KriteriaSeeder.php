@@ -29,7 +29,7 @@ class KriteriaSeeder extends Seeder
             [
                 'kode_kriteria' => 'C3',
                 'nama_kriteria' => 'Ketersediaan',
-                'sifat'         => 'cost',
+                'sifat'         => 'benefit',
                 'bobot'         => 0.20,
             ],
             [
