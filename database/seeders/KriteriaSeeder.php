@@ -40,7 +40,10 @@ class KriteriaSeeder extends Seeder
             ],
         ];
         foreach ($data as $item) {
-            Kriteria::create($item);
+            Kriteria::updateOrcreate(
+                ['kode_kriteria' => $item['kode_kriteria']], 
+                $item 
+            );
         }
     }
 }
