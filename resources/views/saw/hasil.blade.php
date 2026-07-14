@@ -159,7 +159,9 @@
                     <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
                 </svg>
             </button>
-
+			<?php 
+			//kategori 
+			?>
             <select id="filterKategori" name="filterKategori" class="sr-only">
                 <option value="all">Semua Menu</option>
                 @foreach($kategoriList as $kat)

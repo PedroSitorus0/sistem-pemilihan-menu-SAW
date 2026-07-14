@@ -15,9 +15,16 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/about', function () {
+    return view('about');
+})->name('about');
+
+
 // Route::get('/errors', function() {
-//     abort(500);
-// });
+    //     abort(500);
+    // });
+// Route::get('/about', function () {return view('about');})
+
 
 Route::get('/dashboard', function () {
     return view('dashboard');
@@ -44,7 +51,10 @@ Route::middleware('auth')->group(function () {
     Route::resource('/penilaian', PenilaianController::class);
     Route::get('/rekomendasi-menu',[SawController::class, 'hasil'])->name('saw.hasil');
     Route::get('/prototype', [SawController::class, 'hasil'])->name('');
-    Route::get('/about', function () {return view('about');})->name('about');
+    //test
+    Route::get('/about', function(){
+        return view('about');
+    });
 
     Route::middleware(['role:admin,dev'])->group(function() {
         Route::resource('menus', MenuController::class);
@@ -56,7 +66,7 @@ Route::middleware('auth')->group(function () {
     Route::middleware(['role:dev'])->group(function() {
         Route::prefix('logs')->name('logs.')->group(function () {
         
-        // 1. Route spesifik/statis HARUS diletakkan paling atas
+            // 1. Route spesifik/statis HARUS diletakkan paling atas
         Route::get('/export', [LogController::class, 'export'])->name('export');
         Route::post('/clear', [LogController::class, 'clearOldLogs'])->name('clear');
         
@@ -79,6 +89,7 @@ Route::middleware(['auth', 'role:admin,dev'])->group(function () {
 Route::middleware(['auth', 'role:dosen,mahasiswa'])->group(function () {
     Route::get('/hasil', [SawController::class, 'hasil'])->name('saw.hasil');
 });
+
 
 
 require __DIR__.'/auth.php';

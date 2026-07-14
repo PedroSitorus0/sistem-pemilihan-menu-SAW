@@ -15,7 +15,7 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'SPK Kantin'),
+    'name' => env('APP_NAME', 'SISTEM-PEMILIHAN-MENU-Kantin-STMIK'),
 
     /*
     |--------------------------------------------------------------------------
