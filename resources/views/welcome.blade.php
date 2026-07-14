@@ -33,7 +33,7 @@
                 <a href="{{ route('register') }}" class="bg-[#E63912] text-white px-8 py-4 rounded-xl font-semibold hover:bg-[#CC3210] transition transform hover:-translate-y-1 shadow-xl shadow-[#E63912]/30">
                     Mulai Sekarang
                 </a>
-                <a href="#" class="border border-slate-300 bg-white px-8 py-4 rounded-xl font-semibold hover:border-[#E63912] hover:text-[#E63912] transition shadow-sm">
+                <a href="{{ route ('about') }}" class="border border-slate-300 bg-white px-8 py-4 rounded-xl font-semibold hover:border-[#E63912] hover:text-[#E63912] transition shadow-sm">
                     Pelajari Lebih Lanjut
                 </a>
             </div>
