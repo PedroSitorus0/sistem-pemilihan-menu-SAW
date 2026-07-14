@@ -29,7 +29,7 @@ class KriteriaSeeder extends Seeder
             [
                 'kode_kriteria' => 'C3',
                 'nama_kriteria' => 'Ketersediaan',
-                'sifat'         => 'cost',
+                'sifat'         => 'benefit',
                 'bobot'         => 0.20,
             ],
             [
@@ -40,7 +40,10 @@ class KriteriaSeeder extends Seeder
             ],
         ];
         foreach ($data as $item) {
-            Kriteria::create($item);
+            Kriteria::updateOrcreate(
+                ['kode_kriteria' => $item['kode_kriteria']], 
+                $item 
+            );
         }
     }
 }
