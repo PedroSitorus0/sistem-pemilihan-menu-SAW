@@ -42,7 +42,7 @@
                             <img class="w-9 h-9 rounded-full object-cover border border-gray-200 shadow-sm" src="{{ asset('storage/' . Auth::user()->foto) }}" alt="{{ Auth::user()->name }}">
                         @else
                             <div class="w-9 h-9 rounded-full bg-[#E63912] flex items-center justify-center text-white font-bold text-sm shadow-sm border border-red-200">
-                                {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
+                                {{ strtoupper(substr(Auth::user()->nama, 0, 1)) }}
                             </div>
                         @endif
                     </button>
