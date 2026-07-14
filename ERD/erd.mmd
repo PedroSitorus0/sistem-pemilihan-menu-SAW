@@ -1,0 +1,72 @@
+erDiagram
+    %% Relasi antar tabel
+    users ||--o{ penilaian : "melakukan"
+    users ||--o{ system_logs : "aktivitas tercatat di"
+    menus ||--o{ penilaian : "mendapat"
+    kriteria ||--o{ penilaian : "menjadi dasar"
+
+    %% Definisi Entitas & Atribut
+    users {
+        bigint id PK
+        varchar nama
+        varchar email UK
+        timestamp email_verified_at "nullable"
+        varchar phone UK "nullable"
+        varchar nomor_induk UK "nullable"
+        varchar foto "nullable"
+        timestamp nomor_induk_verified_at "nullable"
+        varchar password
+        enum role "admin, mahasiswa, dev"
+        varchar remember_token "nullable"
+        timestamp created_at "nullable"
+        timestamp updated_at "nullable"
+    }
+
+    kriteria {
+        bigint id PK
+        varchar kode_kriteria UK
+        varchar nama_kriteria
+        enum sifat "cost, benefit"
+        double bobot
+        timestamp created_at "nullable"
+        timestamp updated_at "nullable"
+    }
+
+    menus {
+        bigint id PK
+        varchar nama_menu
+        varchar kategori
+        int harga
+        text deskripsi "nullable"
+        enum ketersediaan "tersedia, tanpa keterangan, tidak tersedia"
+        varchar foto "nullable"
+        timestamp created_at "nullable"
+        timestamp updated_at "nullable"
+    }
+
+    penilaian {
+        bigint id PK
+        bigint menu_id FK
+        bigint kriteria_id FK
+        bigint user_id FK
+        double nilai
+        timestamp created_at "nullable"
+        timestamp updated_at "nullable"
+    }
+
+    system_logs {
+        bigint id PK
+        bigint user_id FK "nullable"
+        varchar method
+        varchar url
+        varchar ip_address "nullable"
+        varchar user_agent "nullable"
+        varchar aksi
+        smallint status_code "nullable"
+        varchar exception_class "nullable"
+        text exception_message "nullable"
+        longtext exception_trace "nullable"
+        tinyint is_error
+        timestamp created_at "nullable"
+        timestamp updated_at "nullable"
+    }
