@@ -52,9 +52,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/rekomendasi-menu',[SawController::class, 'hasil'])->name('saw.hasil');
     Route::get('/prototype', [SawController::class, 'hasil'])->name('');
     //test
-    Route::get('/about', function(){
-        return view('about');
-    });
+    // Route::get('/about', function(){
+    //     return view('about');
+    // });
 
     Route::middleware(['role:admin,dev'])->group(function() {
         Route::resource('menus', MenuController::class);
