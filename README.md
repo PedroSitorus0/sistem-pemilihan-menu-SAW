@@ -140,7 +140,7 @@ Aplikasi berbasis web untuk membantu pemilihan menu terbaik di kantin menggunaka
 - Pastikan file `.env` sudah dikonfigurasi untuk database sebelum menjalankan migrate dan seed.
 
 ## Contributor 
-Terima kasih untuk para kontributor yang telah meramaikan repository ini :3
+Terima kasih untuk Kalian Semua:
 
 <a href="https://github.com/PedroSitorus0/sistem-pemilihan-menu-SAW.git">
   <img src="https://contrib.rocks/image?repo=PedroSitorus0/sistem-pemilihan-menu-SAW" />
