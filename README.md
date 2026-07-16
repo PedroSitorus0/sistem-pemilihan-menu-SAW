@@ -138,3 +138,10 @@ Aplikasi berbasis web untuk membantu pemilihan menu terbaik di kantin menggunaka
 - Nilai C1 (Harga) tidak diinput manual oleh penilai, tetapi diambil otomatis dari tabel menus.
 - Ketersediaan pada tabel menus saat ini bertipe ENUM; apabila akan digunakan langsung dalam perhitungan, harus dikonversi ke integer melalui accessor di model.
 - Pastikan file `.env` sudah dikonfigurasi untuk database sebelum menjalankan migrate dan seed.
+
+## Contributor 
+Terima kasih untuk Kalian Semua:
+
+<a href="https://github.com/PedroSitorus0/sistem-pemilihan-menu-SAW.git">
+  <img src="https://contrib.rocks/image?repo=PedroSitorus0/sistem-pemilihan-menu-SAW" />
+</a>

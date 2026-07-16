@@ -72,7 +72,7 @@ class MenuController extends Controller
             'kategori' => 'required|string|max:50',
             'harga' => 'required|integer',
             'deskripsi' => 'nullable|string',
-            'ketersediaan' => 'required|in:tersedia, tanpa keterangan, tidak tersedia',
+            'ketersediaan' => 'required|in:tersedia,tanpa keterangan,tidak tersedia',
             'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
